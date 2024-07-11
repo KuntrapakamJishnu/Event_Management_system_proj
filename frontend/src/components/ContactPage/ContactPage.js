@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import Axios from "axios";
 
-import './ContactPage.css'; 
+import "./ContactPage.css";
 
 class ContactPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
-      email: '',
-      message: '',
+      name: "",
+      email: "",
+      message: "",
       feedback: [],
-      errors: {}, 
+      errors: {},
     };
   }
   handleInputChange = (e) => {
@@ -24,15 +24,15 @@ class ContactPage extends Component {
     e.preventDefault();
     const errors = {};
     if (!this.state.name.trim()) {
-      errors.name = 'Name is required';
+      errors.name = "Name is required";
     }
     if (!this.state.email.trim()) {
-      errors.email = 'Email is required';
+      errors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.state.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = "Invalid email format";
     }
     if (!this.state.message.trim()) {
-      errors.message = 'Message is required';
+      errors.message = "Message is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -42,28 +42,27 @@ class ContactPage extends Component {
         message: this.state.message,
       };
 
-      Axios.post("http://localhost:4000/eventRoute/post-feedback", newFeedback)
-      .then((res) => {
-        if(res.status === 200)
-          alert("Thank you for your feedback!");
-        else
-          Promise.reject();
-      })
-      .catch((err) => alert(err));
+      Axios.post(
+        "https://event-management-system-proj.onrender.com/eventRoute/post-feedback",
+        newFeedback
+      )
+        .then((res) => {
+          if (res.status === 200) alert("Thank you for your feedback!");
+          else Promise.reject();
+        })
+        .catch((err) => alert(err));
 
       this.setState((prevState) => ({
         feedback: [...prevState.feedback, newFeedback],
         errors: {},
       }));
 
-   
       this.setState({
-        name: '',
-        email: '',
-        message: '',
+        name: "",
+        email: "",
+        message: "",
       });
     } else {
-     
       this.setState({
         errors,
       });

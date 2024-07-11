@@ -25,14 +25,17 @@ function EventCard(props) {
   let month = Math.floor(Math.random() * 12) + 1;
   let day = Math.floor(Math.random() * 28) + 1;
 
-  let monthStr = month.toString().padStart(2, '0');
-    let dayStr = day.toString().padStart(2, '0');
+  let monthStr = month.toString().padStart(2, "0");
+  let dayStr = day.toString().padStart(2, "0");
 
   const user = localStorage.getItem("user"); // Get current user
 
   // Function to book event
   const Book = () => {
-    Axios.get("http://localhost:4000/eventRoute/check-user/" + user)
+    Axios.get(
+      "https://event-management-system-proj.onrender.com/eventRoute/check-user/" +
+        user
+    )
       .then((res) => {
         if (res.status === 200) {
           if (res.data != null) {
@@ -78,7 +81,7 @@ function EventCard(props) {
               Axios.all([
                 // Updating user information and adding event
                 Axios.put(
-                  "http://localhost:4000/eventRoute/update-user/" +
+                  "https://event-management-system-proj.onrender.com/eventRoute/update-user/" +
                     res.data._id,
                   userData
                 )
@@ -90,7 +93,8 @@ function EventCard(props) {
 
                 // Updating event information by adding user and reducing slots
                 Axios.put(
-                  "http://localhost:4000/eventRoute/update-event/" + _id,
+                  "https://event-management-system-proj.onrender.com/eventRoute/update-event/" +
+                    _id,
                   eventData
                 )
                   .then((eventUpdateResponse) => {
@@ -212,7 +216,10 @@ function EventCard(props) {
   // Function to delete event
   const deleteEvent = () => {
     Axios.all([
-      Axios.delete("http://localhost:4000/eventRoute/delete-event/" + _id)
+      Axios.delete(
+        "https://event-management-system-proj.onrender.com/eventRoute/delete-event/" +
+          _id
+      )
         .then((res) => {
           if (res.status === 200) {
             alert("Event deleted successfully");
@@ -221,32 +228,32 @@ function EventCard(props) {
         })
         .catch((err) => alert(err)),
 
-      Axios.get("http://localhost:4000/eventRoute/user-list").then(
-        (userResponse) => {
-          if (userResponse.status === 200) {
-            // Finding users who have booked current event
-            const collectedUsers = userResponse.data;
-            for (let i = 0; i < collectedUsers.length; i++) {
-              let userData = collectedUsers[i];
-              userData.bookedEvents = userData.bookedEvents.filter(
-                (event) => event._id !== _id
-              );
+      Axios.get(
+        "https://event-management-system-proj.onrender.com/eventRoute/user-list"
+      ).then((userResponse) => {
+        if (userResponse.status === 200) {
+          // Finding users who have booked current event
+          const collectedUsers = userResponse.data;
+          for (let i = 0; i < collectedUsers.length; i++) {
+            let userData = collectedUsers[i];
+            userData.bookedEvents = userData.bookedEvents.filter(
+              (event) => event._id !== _id
+            );
 
-              Axios.put(
-                "http://localhost:4000/eventRoute/update-user/" +
-                  collectedUsers[i]._id,
-                userData
-              )
-                .then((updateResponse) => {
-                  if (updateResponse.status === 200)
-                    console.log("User details updated");
-                  else Promise.reject();
-                })
-                .catch((updateError) => alert(updateError));
-            }
+            Axios.put(
+              "https://event-management-system-proj.onrender.com/eventRoute/update-user/" +
+                collectedUsers[i]._id,
+              userData
+            )
+              .then((updateResponse) => {
+                if (updateResponse.status === 200)
+                  console.log("User details updated");
+                else Promise.reject();
+              })
+              .catch((updateError) => alert(updateError));
           }
         }
-      ),
+      }),
     ]);
   };
 
